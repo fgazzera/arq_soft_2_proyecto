@@ -54,7 +54,7 @@ func (s *hotelService) GetHotelById(id string) (dtos.HotelDto, e.ApiError) {
 	hotelDto.Email = hotel.Email
 	hotelDto.Ciudad = hotel.Ciudad
 	hotelDto.Images = hotel.Images
-	hotelDto.Cant_Hab = hotel.Cant_Hab
+	hotelDto.CantHab = hotel.CantHab
 	hotelDto.Amenities = hotel.Amenities
 
 	// save in cache
@@ -74,7 +74,7 @@ func (s *hotelService) InsertHotel(hotelDto dtos.HotelDto) (dtos.HotelDto, e.Api
 	hotel.Email = hotelDto.Email
 	hotel.Ciudad = hotelDto.Ciudad
 	hotel.Images = hotelDto.Images
-	hotel.Cant_Hab = hotelDto.Cant_Hab
+	hotel.CantHab = hotelDto.CantHab
 	hotel.Amenities = hotelDto.Amenities
 
 	hotel = hotelDao.InsertHotel(hotel)
@@ -100,10 +100,10 @@ func (s *hotelService) UpdateHotelById(id string, hotelDto dtos.HotelDto) (dtos.
 	hotel.Email = hotelDto.Email
 	hotel.Ciudad = hotelDto.Ciudad
 	hotel.Images = hotelDto.Images
-	hotel.Cant_Hab = hotelDto.Cant_Hab
+	hotel.CantHab = hotelDto.CantHab
 	hotel.Amenities = hotelDto.Amenities
 
-	hotel = hotelDao.Update(hotel)
+	hotel = hotelDao.UpdateHotel(hotel)
 	hotelDto.ID = hotel.ID.Hex()
 
 	// save in cache

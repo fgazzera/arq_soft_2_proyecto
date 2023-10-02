@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -16,15 +17,14 @@ func DisconnectDB() {
 }
 
 func InitDB() error {
-	clientOpts := options.Client().ApplyURI("mongodb://localhost:27017")
+	clientOpts := options.Client().ApplyURI("mongodb://root:root@localhost:27017")
 	cli, err := mongo.Connect(context.TODO(), clientOpts)
 	client = cli
 	if err != nil {
 		return err
 	}
 
-	// Crear la base de datos "fichahotel" (colecciones se crean automáticamente)
-	MongoDb = client.Database("fichahotel")
+	MongoDb = client.Database("arq_soft_2")
 
 	dbNames, err := client.ListDatabaseNames(context.TODO(), bson.M{})
 	if err != nil {

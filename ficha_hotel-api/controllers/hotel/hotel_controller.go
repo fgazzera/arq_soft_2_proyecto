@@ -61,6 +61,17 @@ func InsertHotel(c *gin.Context) {
 }
 
 func UpdateHotelById(c *gin.Context) {
+	var hotelDto dtos.HotelDto
+	err := c.BindJSON(&hotelDto)
+
+	// Error Parsing json param
+	if err != nil {
+
+		fmt.Println(err)
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
 	id := c.Param("id")
 
 	if len(rateLimiter) == cap(rateLimiter) {
@@ -69,8 +80,10 @@ func UpdateHotelById(c *gin.Context) {
 		return
 	}
 
+	var updatedHotelDto dtos.HotelDto
+
 	rateLimiter <- true
-	hotelDto, er := service.HotelService.UpdateHotelById(id)
+	updatedHotelDto, er := service.HotelService.UpdateHotelById(id, hotelDto)
 	<-rateLimiter
 
 	// Error del Insert
@@ -79,5 +92,5 @@ func UpdateHotelById(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, hotelDto)
+	c.JSON(http.StatusOK, updatedHotelDto)
 }

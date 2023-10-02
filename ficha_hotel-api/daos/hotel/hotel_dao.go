@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func GetByHotelId(id string) model.Hotel {
+func GetHotelById(id string) model.Hotel {
 	var hotel model.Hotel
 	db := db.MongoDb
 	objID, err := primitive.ObjectIDFromHex(id)
@@ -18,7 +18,7 @@ func GetByHotelId(id string) model.Hotel {
 		fmt.Println(err)
 		return hotel
 	}
-	err = db.Collection("hotels").FindOne(context.TODO(), bson.D{{"_id", objID}}).Decode(&hotel)
+	err = db.Collection("ficha_hotel").FindOne(context.TODO(), bson.D{{"_id", objID}}).Decode(&hotel)
 	if err != nil {
 		fmt.Println(err)
 		return hotel
@@ -31,7 +31,7 @@ func InsertHotel(hotel model.Hotel) model.Hotel {
 	db := db.MongoDb
 	insertHotel := hotel
 	insertHotel.ID = primitive.NewObjectID()
-	_, err := db.Collection("hotels").InsertOne(context.TODO(), &insertHotel)
+	_, err := db.Collection("ficha_hotel").InsertOne(context.TODO(), &insertHotel)
 
 	if err != nil {
 		fmt.Println(err)
@@ -41,7 +41,7 @@ func InsertHotel(hotel model.Hotel) model.Hotel {
 	return hotel
 }
 
-func UpdateHotel(hotel model.Hotel) (model.Hotel, error) {
+func UpdateHotel(hotel model.Hotel) model.Hotel {
 	db := db.MongoDb
 	filter := bson.M{"_id": hotel.ID}
 	update := bson.M{
@@ -51,15 +51,16 @@ func UpdateHotel(hotel model.Hotel) (model.Hotel, error) {
 			"email":       hotel.Email,
 			"ciudad":      hotel.Ciudad,
 			"images":      hotel.Images,
-			"cant_hab":    hotel.Cant_Hab,
+			"cant_hab":    hotel.CantHab,
 			"amenities":   hotel.Amenities,
 		},
 	}
 
-	_, err := db.Collection("hotels").UpdateOne(context.TODO(), filter, update)
+	_, err := db.Collection("ficha_hotel").UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		return model.Hotel{}, err
+		fmt.Println(err)
+		return hotel
 	}
 
-	return hotel, nil
+	return hotel
 }

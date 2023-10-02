@@ -8,8 +8,8 @@ import (
 
 var cacheClient *memcache.Client
 
-func Init_cache() {
-	cacheClient = memcache.new("localhost:11211")
+func InitCache() {
+	cacheClient = memcache.New("localhost:11211")
 }
 
 func Set(key string, value []byte) {
