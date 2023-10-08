@@ -1,11 +1,13 @@
 package services
 
 import (
+	"ficha_hotel-api/cache"
 	hotelDao "ficha_hotel-api/daos/hotel"
 	"ficha_hotel-api/dtos"
 	model "ficha_hotel-api/model"
 	e "ficha_hotel-api/utils/errors"
 	"fmt"
+	"time"
 
 	json "github.com/json-iterator/go"
 )
@@ -28,6 +30,17 @@ func init() {
 
 func (s *hotelService) GetHotelById(id string) (dtos.HotelDto, e.ApiError) {
 
+	time.Sleep(15 * time.Second)
+
+	// get from cache
+	var cacheDTO dtos.HotelDto
+	cacheBytes := cache.Get(id)
+	if cacheBytes != nil {
+		fmt.Println("Found in cache!")
+		_ = json.Unmarshal(cacheBytes, &cacheDTO)
+		return cacheDTO, nil
+	}
+
 	var hotel model.Hotel = hotelDao.GetHotelById(id)
 	var hotelDto dtos.HotelDto
 
@@ -43,6 +56,11 @@ func (s *hotelService) GetHotelById(id string) (dtos.HotelDto, e.ApiError) {
 	hotelDto.Images = hotel.Images
 	hotelDto.CantHab = hotel.CantHab
 	hotelDto.Amenities = hotel.Amenities
+
+	// save in cache
+	hotelBytes, _ := json.Marshal(hotelDto)
+	cache.Set(id, hotelBytes)
+	fmt.Println("Saved in cache!")
 
 	return hotelDto, nil
 }
@@ -87,6 +105,11 @@ func (s *hotelService) UpdateHotelById(id string, hotelDto dtos.HotelDto) (dtos.
 
 	hotel = hotelDao.UpdateHotel(hotel)
 	hotelDto.ID = hotel.ID.Hex()
+
+	// save in cache
+	hotelBytes, _ := json.Marshal(hotelDto)
+	cache.Set(id, hotelBytes)
+	fmt.Println("Saved in cache!")
 
 	return hotelDto, nil
 }

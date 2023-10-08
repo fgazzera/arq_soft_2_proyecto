@@ -1,0 +1,56 @@
+docker run -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=root --name some-mongo -d mongo:5.0
+docker ps
+docker exec -it [CONTAINER] bash
+mongosh --username root --password root --authenticationDatabase admin
+show dbs
+use arq_soft_2
+db.ficha_hotel.insertMany(
+[
+  {
+    "nombre": "Hotel Ejemplo 1",
+    "descripcion": "Este es un hotel de ejemplo 1",
+    "email": "hotel1@example.com",
+    "ciudad": "Ciudad Ejemplo 1",
+    "images": ["imagen1.jpg", "imagen2.jpg"],
+    "cant_hab": 50,
+    "amenities": ["Piscina", "Restaurante", "Gimnasio"]
+  },
+  {
+    "nombre": "Hotel Ejemplo 2",
+    "descripcion": "Este es un hotel de ejemplo 2",
+    "email": "hotel2@example.com",
+    "ciudad": "Ciudad Ejemplo 2",
+    "images": ["imagen3.jpg", "imagen4.jpg"],
+    "cant_hab": 80,
+    "amenities": ["Spa", "Restaurante", "Bar"]
+  },
+  {
+    "nombre": "Hotel Ejemplo 3",
+    "descripcion": "Este es un hotel de ejemplo 3",
+    "email": "hotel3@example.com",
+    "ciudad": "Ciudad Ejemplo 3",
+    "images": ["imagen5.jpg", "imagen6.jpg"],
+    "cant_hab": 60,
+    "amenities": ["Piscina", "Spa", "Bar"]
+  },
+  {
+    "nombre": "Hotel Ejemplo 4",
+    "descripcion": "Este es un hotel de ejemplo 4",
+    "email": "hotel4@example.com",
+    "ciudad": "Ciudad Ejemplo 4",
+    "images": ["imagen7.jpg", "imagen8.jpg"],
+    "cant_hab": 70,
+    "amenities": ["Gimnasio", "Restaurante", "Spa"]
+  },
+  {
+    "nombre": "Hotel Ejemplo 5",
+    "descripcion": "Este es un hotel de ejemplo 5",
+    "email": "hotel5@example.com",
+    "ciudad": "Ciudad Ejemplo 5",
+    "images": ["imagen9.jpg", "imagen10.jpg"],
+    "cant_hab": 90,
+    "amenities": ["Piscina", "Restaurante", "Gimnasio", "Spa"]
+  }
+]
+)
+show dbs
