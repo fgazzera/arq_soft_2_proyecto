@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ficha_hotel-api/cache"
+	//"ficha_hotel-api/cache"
 	"ficha_hotel-api/router"
 	"ficha_hotel-api/utils/db"
 	"fmt"
@@ -16,7 +16,7 @@ var (
 func main() {
 	ginRouter = gin.Default()
 	router.MapUrls(ginRouter)
-	cache.InitCache()
+	//cache.InitCache()
 	err := db.InitDB()
 	defer db.DisconnectDB()
 
