@@ -3,7 +3,6 @@ package model
 type Reserva struct {
 	ID int `gorm:"primaryKey"`
 
-	Hotel   Hotel `gorm:"foreignkey:HotelID"`
 	HotelID int
 
 	User   User `gorm:"foreignkey:UserID"`
