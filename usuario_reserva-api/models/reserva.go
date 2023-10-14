@@ -1,4 +1,4 @@
-package model
+package models
 
 type Reserva struct {
 	ID int `gorm:"primaryKey"`

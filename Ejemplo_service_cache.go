@@ -4,7 +4,7 @@ import (
 	"ficha_hotel-api/cache"
 	hotelDao "ficha_hotel-api/daos/hotel"
 	"ficha_hotel-api/dtos"
-	model "ficha_hotel-api/model"
+	"ficha_hotel-api/model"
 	e "ficha_hotel-api/utils/errors"
 	"fmt"
 	"time"

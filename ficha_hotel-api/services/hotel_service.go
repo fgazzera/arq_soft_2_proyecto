@@ -3,11 +3,8 @@ package services
 import (
 	hotelDao "ficha_hotel-api/daos/hotel"
 	"ficha_hotel-api/dtos"
-	model "ficha_hotel-api/model"
+	"ficha_hotel-api/model"
 	e "ficha_hotel-api/utils/errors"
-	"fmt"
-
-	json "github.com/json-iterator/go"
 )
 
 type hotelService struct{}

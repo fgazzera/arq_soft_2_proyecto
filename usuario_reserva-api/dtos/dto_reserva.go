@@ -1,4 +1,4 @@
-package dto
+package dtos
 
 type ReservaDto struct {
 	ID int `json:"id"`

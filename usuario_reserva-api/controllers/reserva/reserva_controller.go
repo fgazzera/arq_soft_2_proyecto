@@ -3,7 +3,7 @@ package reservaController
 import (
 	"net/http"
 	"strconv"
-	dtos "usuario_reserva-api/dtos"
+	"usuario_reserva-api/dtos"
 	service "usuario_reserva-api/services"
 
 	"github.com/gin-gonic/gin"

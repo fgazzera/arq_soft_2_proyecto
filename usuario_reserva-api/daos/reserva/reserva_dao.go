@@ -1,7 +1,7 @@
 package reserva
 
 import (
-	models "usuario_reserva-api/models"
+	"usuario_reserva-api/models"
 
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"

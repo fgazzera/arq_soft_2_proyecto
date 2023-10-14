@@ -1,11 +1,15 @@
 package services
 
 import (
+	"fmt"
+	//"time"
+	"usuario_reserva-api/cache"
 	reservaDao "usuario_reserva-api/daos/reserva"
-
-	dtos "usuario_reserva-api/dtos"
-	models "usuario_reserva-api/models"
+	"usuario_reserva-api/dtos"
+	"usuario_reserva-api/models"
 	e "usuario_reserva-api/utils/errors"
+
+	json "github.com/json-iterator/go"
 )
 
 type reservaService struct{}
@@ -50,10 +54,29 @@ func (s *reservaService) InsertReserva(reservaDto dtos.ReservaDto) (dtos.Reserva
 
 	reservaDto.ID = reserva.ID
 
+	// save in cache
+	reservaBytes, _ := json.Marshal(reservaDto)
+	cache.Set(fmt.Sprintf("reserva_%d", reservaDto.ID), reservaBytes)
+	fmt.Println("Saved reserva in cache!")
+
 	return reservaDto, nil
 }
 
 func (s *reservaService) GetReservaById(id int) (dtos.ReservaDto, e.ApiError) {
+
+	//time.Sleep(15 * time.Second)
+
+	// Genera una clave de caché única para reserva
+	cacheKey := fmt.Sprintf("reserva_%d", id)
+
+	// get from cache
+	var cacheDTO dtos.ReservaDto
+	cacheBytes := cache.Get(cacheKey)
+	if cacheBytes != nil {
+		fmt.Println("Found reserva in cache!")
+		_ = json.Unmarshal(cacheBytes, &cacheDTO)
+		return cacheDTO, nil
+	}
 
 	var reserva models.Reserva = reservaDao.GetReservaById(id)
 	var reservaDto dtos.ReservaDto
@@ -73,10 +96,29 @@ func (s *reservaService) GetReservaById(id int) (dtos.ReservaDto, e.ApiError) {
 	reservaDto.DiaFinal = reserva.DiaFinal
 	reservaDto.Dias = reserva.Dias
 
+	// save in cache
+	reservaBytes, _ := json.Marshal(reservaDto)
+	cache.Set(cacheKey, reservaBytes)
+	fmt.Println("Saved reserva in cache!")
+
 	return reservaDto, nil
 }
 
 func (s *reservaService) GetReservasById(id int) (dtos.ReservasDto, e.ApiError) {
+
+	//time.Sleep(15 * time.Second)
+
+	// Genera una clave de caché única para reservas
+	cacheKey := fmt.Sprintf("reservas_%d", id)
+
+	// get from cache
+	var cacheDTO dtos.ReservasDto
+	cacheBytes := cache.Get(cacheKey)
+	if cacheBytes != nil {
+		fmt.Println("Found reservas in cache!")
+		_ = json.Unmarshal(cacheBytes, &cacheDTO)
+		return cacheDTO, nil
+	}
 
 	var reservas models.Reservas = reservaDao.GetReservasById(id)
 	var reservasDto dtos.ReservasDto
@@ -101,6 +143,11 @@ func (s *reservaService) GetReservasById(id int) (dtos.ReservasDto, e.ApiError) 
 
 		reservasDto = append(reservasDto, reservaDto)
 	}
+
+	// save in cache
+	reservasBytes, _ := json.Marshal(reservasDto)
+	cache.Set(cacheKey, reservasBytes)
+	fmt.Println("Saved reservas in cache!")
 
 	return reservasDto, nil
 }
@@ -129,6 +176,20 @@ func (s *reservaService) GetDisponibilidad(id, AnioInicio, AnioFinal, MesInicio,
 
 func (s *reservaService) GetReservasByDate(AnioInicio, AnioFinal, MesInicio, MesFinal, DiaInicio, DiaFinal int) (dtos.ReservasDto, e.ApiError) {
 
+	//time.Sleep(15 * time.Second)
+
+	// Genera una clave de caché única para reservas
+	cacheKey := fmt.Sprintf("reservas_date_%d_%d_%d_%d_%d_%d_%d", AnioInicio, AnioFinal, MesInicio, MesFinal, DiaInicio, DiaFinal)
+
+	// get from cache
+	var cacheDTO dtos.ReservasDto
+	cacheBytes := cache.Get(cacheKey)
+	if cacheBytes != nil {
+		fmt.Println("Found reservas in cache!")
+		_ = json.Unmarshal(cacheBytes, &cacheDTO)
+		return cacheDTO, nil
+	}
+
 	var reservas models.Reservas = reservaDao.GetReservasByDate()
 	var reservasDto dtos.ReservasDto
 
@@ -150,6 +211,11 @@ func (s *reservaService) GetReservasByDate(AnioInicio, AnioFinal, MesInicio, Mes
 			reservasDto = append(reservasDto, reservaDto)
 		}
 	}
+
+	// save in cache
+	reservasBytes, _ := json.Marshal(reservasDto)
+	cache.Set(cacheKey, reservasBytes)
+	fmt.Println("Saved reservas in cache!")
 
 	return reservasDto, nil
 }

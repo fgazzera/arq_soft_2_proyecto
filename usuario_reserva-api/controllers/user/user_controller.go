@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	dtos "usuario_reserva-api/dtos"
+	"usuario_reserva-api/dtos"
 	service "usuario_reserva-api/services"
 
 	"github.com/dgrijalva/jwt-go"

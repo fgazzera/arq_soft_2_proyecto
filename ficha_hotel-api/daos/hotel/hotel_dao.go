@@ -2,7 +2,7 @@ package hotel
 
 import (
 	"context"
-	model "ficha_hotel-api/model"
+	"ficha_hotel-api/model"
 	"ficha_hotel-api/utils/db"
 	"fmt"
 

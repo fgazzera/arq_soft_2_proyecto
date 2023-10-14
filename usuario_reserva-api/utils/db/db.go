@@ -4,7 +4,7 @@ import (
 	reservaDao "usuario_reserva-api/daos/reserva"
 	userDao "usuario_reserva-api/daos/user"
 
-	models "usuario_reserva-api/models"
+	"usuario_reserva-api/models"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
