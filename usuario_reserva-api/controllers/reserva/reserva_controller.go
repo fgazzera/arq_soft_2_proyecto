@@ -3,46 +3,15 @@ package reservaController
 import (
 	"net/http"
 	"strconv"
-	"usuario_reserva-api/dto"
+	dtos "usuario_reserva-api/dtos"
 	service "usuario_reserva-api/services"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )
 
-func GetReservaById(c *gin.Context) {
-	log.Debug("ID de reserva para cargar: " + c.Param("id"))
-
-	id, _ := strconv.Atoi(c.Param("id"))
-	var reservaDto dto.ReservaDto
-
-	reservaDto, err := service.ReservaService.GetReservaById(id)
-
-	if err != nil {
-		c.JSON(err.Status(), err)
-		return
-	}
-	c.JSON(http.StatusOK, reservaDto)
-}
-
-func GetReservasById(c *gin.Context) {
-	log.Debug("ID de reserva para cargar: " + c.Param("id"))
-
-	id, _ := strconv.Atoi(c.Param("id"))
-	var reservasDto dto.ReservasDto
-
-	reservasDto, err := service.ReservaService.GetReservasById(id)
-
-	if err != nil {
-		c.JSON(err.Status(), err)
-		return
-	}
-
-	c.JSON(http.StatusOK, reservasDto)
-}
-
 func InsertReserva(c *gin.Context) {
-	var reservaDto dto.ReservaDto
+	var reservaDto dtos.ReservaDto
 	err := c.BindJSON(&reservaDto)
 
 	// Error Parsing json param
@@ -60,6 +29,37 @@ func InsertReserva(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, reservaDto)
+}
+
+func GetReservaById(c *gin.Context) {
+	log.Debug("ID de reserva para cargar: " + c.Param("id"))
+
+	id, _ := strconv.Atoi(c.Param("id"))
+	var reservaDto dtos.ReservaDto
+
+	reservaDto, err := service.ReservaService.GetReservaById(id)
+
+	if err != nil {
+		c.JSON(err.Status(), err)
+		return
+	}
+	c.JSON(http.StatusOK, reservaDto)
+}
+
+func GetReservasById(c *gin.Context) {
+	log.Debug("ID de reserva para cargar: " + c.Param("id"))
+
+	id, _ := strconv.Atoi(c.Param("id"))
+	var reservasDto dtos.ReservasDto
+
+	reservasDto, err := service.ReservaService.GetReservasById(id)
+
+	if err != nil {
+		c.JSON(err.Status(), err)
+		return
+	}
+
+	c.JSON(http.StatusOK, reservasDto)
 }
 
 func GetDisponibilidad(c *gin.Context) {
@@ -88,7 +88,7 @@ func GetReservasByDate(c *gin.Context) {
 	DiaInicio, _ := strconv.Atoi(c.Param("DiaInicio"))
 	DiaFinal, _ := strconv.Atoi(c.Param("DiaFinal"))
 
-	var reservasDto dto.ReservasDto
+	var reservasDto dtos.ReservasDto
 
 	reservasDto, err := service.ReservaService.GetReservasByDate(AnioInicio, AnioFinal, MesInicio, MesFinal, DiaInicio, DiaFinal)
 

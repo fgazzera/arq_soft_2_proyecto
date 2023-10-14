@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-	"usuario_reserva-api/dto"
+	dtos "usuario_reserva-api/dtos"
 	service "usuario_reserva-api/services"
 
 	"github.com/dgrijalva/jwt-go"
@@ -12,71 +12,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func GetUserById(c *gin.Context) {
-	log.Debug("ID de usuario para cargar: " + c.Param("id"))
-
-	id, _ := strconv.Atoi(c.Param("id"))
-	var userDto dto.UserDto
-
-	userDto, err := service.UserService.GetUserById(id)
-
-	if err != nil {
-		c.JSON(err.Status(), err)
-		return
-	}
-
-	c.JSON(http.StatusOK, userDto)
-}
-
-func GetUserByUsername(c *gin.Context) {
-	log.Debug("Usuario a cargar: " + c.Param("username"))
-
-	username := c.Param("username")
-	var userDto dto.UserDto
-
-	userDto, err := service.UserService.GetUserByUsername(username)
-
-	if err != nil {
-		c.JSON(err.Status(), err)
-		return
-	}
-
-	c.JSON(http.StatusOK, userDto)
-}
-
-func GetUserByEmail(c *gin.Context) {
-	log.Debug("Usuario a cargar: " + c.Param("email"))
-
-	email := c.Param("email")
-	var userDto dto.UserDto
-
-	userDto, err := service.UserService.GetUserByEmail(email)
-
-	if err != nil {
-		c.JSON(err.Status(), err)
-		return
-	}
-
-	token := generateToken(userDto)
-	if err != nil {
-		log.Error(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
-		return
-	}
-
-	response := struct {
-		Token   string      `json:"token"`
-		Usuario dto.UserDto `json:"usuario"`
-	}{
-		Token:   token,
-		Usuario: userDto,
-	}
-
-	c.JSON(http.StatusOK, response)
-}
-
 func InsertUser(c *gin.Context) {
-	var userDto dto.UserDto
+	var userDto dtos.UserDto
 	err := c.BindJSON(&userDto)
 
 	// Error Parsing json param
@@ -96,23 +33,70 @@ func InsertUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, userDto)
 }
 
-func GetDisponibilidad(c *gin.Context) {
-	log.Debug("Disponibilidad de reservas para cargar: " + c.Param("id") + c.Param("AnioInicio") + c.Param("MesInicio") + c.Param("DiaInicio") + c.Param("AnioFinal") + c.Param("MesFinal") + c.Param("DiaFinal"))
+func GetUserById(c *gin.Context) {
+	log.Debug("ID de usuario para cargar: " + c.Param("id"))
 
 	id, _ := strconv.Atoi(c.Param("id"))
-	AnioInicio, _ := strconv.Atoi(c.Param("AnioInicio"))
-	AnioFinal, _ := strconv.Atoi(c.Param("AnioFinal"))
-	MesInicio, _ := strconv.Atoi(c.Param("MesInicio"))
-	MesFinal, _ := strconv.Atoi(c.Param("MesFinal"))
-	DiaInicio, _ := strconv.Atoi(c.Param("DiaInicio"))
-	DiaFinal, _ := strconv.Atoi(c.Param("DiaFinal"))
+	var userDto dtos.UserDto
 
-	disponibilidad := service.UserService.GetDisponibilidad(id, AnioInicio, AnioFinal, MesInicio, MesFinal, DiaInicio, DiaFinal)
+	userDto, err := service.UserService.GetUserById(id)
 
-	c.JSON(http.StatusOK, disponibilidad)
+	if err != nil {
+		c.JSON(err.Status(), err)
+		return
+	}
+
+	c.JSON(http.StatusOK, userDto)
 }
 
-func generateToken(loginDto dto.userDto) string {
+func GetUserByUsername(c *gin.Context) {
+	log.Debug("Usuario a cargar: " + c.Param("username"))
+
+	username := c.Param("username")
+	var userDto dtos.UserDto
+
+	userDto, err := service.UserService.GetUserByUsername(username)
+
+	if err != nil {
+		c.JSON(err.Status(), err)
+		return
+	}
+
+	c.JSON(http.StatusOK, userDto)
+}
+
+func GetUserByEmail(c *gin.Context) {
+	log.Debug("Usuario a cargar: " + c.Param("email"))
+
+	email := c.Param("email")
+	var userDto dtos.UserDto
+
+	userDto, err := service.UserService.GetUserByEmail(email)
+
+	if err != nil {
+		c.JSON(err.Status(), err)
+		return
+	}
+
+	token := generateToken(userDto)
+	if err != nil {
+		log.Error(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+		return
+	}
+
+	response := struct {
+		Token   string       `json:"token"`
+		Usuario dtos.UserDto `json:"usuario"`
+	}{
+		Token:   token,
+		Usuario: userDto,
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+func generateToken(loginDto dtos.UserDto) string {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["id"] = loginDto.ID

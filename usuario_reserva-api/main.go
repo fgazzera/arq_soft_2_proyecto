@@ -1,9 +1,10 @@
 package main
 
 import (
-	"books-api/router"
-	"books-api/utils/db"
 	"fmt"
+	"usuario_reserva-api/router"
+	"usuario_reserva-api/utils/db"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,14 +15,7 @@ var (
 func main() {
 	ginRouter = gin.Default()
 	router.MapUrls(ginRouter)
-	err := db.InitDB()
-	defer db.DisconnectDB()
-
-	if err != nil {
-		fmt.Println("Cannot init db")
-		fmt.Println(err)
-		return
-	}
+	db.StartDbEngine()
 	fmt.Println("Starting server")
 	ginRouter.Run(":8090")
 }
