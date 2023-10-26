@@ -1,0 +1,87 @@
+docker run -p 8983:8983 -t solr
+docker ps
+docker exec -it <container-id> /bin/bash
+bin/solr create_core -c busqueda_hotel-core
+
+http://localhost:8983/
+
+Campo "id":
+
+nombre: id
+tipo: string
+stored: Marcado como "stored" (para poder recuperar el valor original en las respuestas).
+indexed: Marcado como "indexed" (para habilitar la indexación).
+uninvertible: No se necesita (este es un atributo avanzado para ciertos casos específicos).
+docValued: No se necesita (usado para valores que necesitan ser docValues).
+multiValued: No se necesita (a menos que planees almacenar múltiples valores en este campo).
+required: Marcado como "required" (esto significa que este campo es necesario para cada documento).
+Campo "nombre":
+
+nombre: nombre
+tipo: text_general
+stored: Marcado como "stored".
+indexed: Marcado como "indexed".
+uninvertible: No se necesita.
+docValued: No se necesita.
+multiValued: No se necesita.
+required: No se necesita.
+Campo "descripcion":
+
+nombre: descripcion
+tipo: text_general
+stored: Marcado como "stored".
+indexed: Marcado como "indexed".
+uninvertible: No se necesita.
+docValued: No se necesita.
+multiValued: No se necesita.
+required: No se necesita.
+Campo "email":
+
+nombre: email
+tipo: string
+stored: Marcado como "stored".
+indexed: Marcado como "indexed".
+uninvertible: No se necesita.
+docValued: No se necesita.
+multiValued: No se necesita.
+required: No se necesita.
+Campo "ciudad":
+
+nombre: ciudad
+tipo: text_general
+stored: Marcado como "stored".
+indexed: Marcado como "indexed".
+uninvertible: No se necesita.
+docValued: No se necesita.
+multiValued: No se necesita.
+required: No se necesita.
+Campo "images":
+
+nombre: images
+tipo: string
+stored: Marcado como "stored".
+indexed: Marcado como "indexed".
+uninvertible: No se necesita.
+docValued: No se necesita.
+multiValued: Marcado como "multiValued" (puedes tener múltiples imágenes por hotel).
+required: No se necesita.
+Campo "cant_hab":
+
+nombre: cant_hab
+tipo: int
+stored: Marcado como "stored".
+indexed: Marcado como "indexed".
+uninvertible: No se necesita.
+docValued: No se necesita.
+multiValued: No se necesita.
+required: No se necesita.
+Campo "amenities":
+
+nombre: amenities
+tipo: text_general
+stored: Marcado como "stored".
+indexed: Marcado como "indexed".
+uninvertible: No se necesita.
+docValued: No se necesita.
+multiValued: Marcado como "multiValued" (puedes tener múltiples comodidades por hotel).
+required: No se necesita.
