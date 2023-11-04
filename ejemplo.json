@@ -1,0 +1,11 @@
+{
+    "id": "hotel123",
+    "nombre": "Ejemplo Hotel",
+    "descripcion": "Un hermoso hotel de ejemplo en una ubicación fantástica.",
+    "email": "ejemplohotel@example.com",
+    "ciudad": "Ciudad Ejemplo",
+    "images": ["imagen1.jpg", "imagen2.jpg", "imagen3.jpg"],
+    "cant_hab": 100,
+    "amenities": ["Piscina", "Restaurante", "Gimnasio", "Estacionamiento"]
+  }
+  

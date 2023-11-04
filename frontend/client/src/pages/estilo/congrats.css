@@ -1,0 +1,20 @@
+.congrats {
+    text-align: center;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    margin: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  h1 {
+    color: #0073e6;
+    font-size: 36px;
+  }
+  
+  p {
+    font-size: 18px;
+    margin: 20px 0;
+  }
+  
+  

@@ -9,6 +9,7 @@ const HomePage = () => {
   const [endDate, setEndDate] = useState('');
   const { isLoggedCliente } = useContext(AuthContext);
   const { isLoggedAdmin } = useContext(AuthContext);
+  const [ciudad, setCiudad] = useState('');
 
   const getHotels = async () => {
     try {
@@ -55,6 +56,10 @@ const HomePage = () => {
     }
   };
 
+  const handleCiudadChange = (event) => {
+    setCiudad(event.target.value);
+  };
+  
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
     const selectedStartDateObj = new Date(event.target.value);
@@ -78,13 +83,13 @@ const HomePage = () => {
   const filterHotels = async () => {
     if (startDate === '' || endDate === '') {
       window.location.href = '/';
-    }
-    else {
+    } else {
       getHotels();
       const startDateObj = new Date(startDate);
       const endDateObj = new Date(endDate);
+  
       for (let i = 0; i < hotels.length; i++) {
-        const request = await fetch(`http://localhost:8090/cliente/disponibilidad/${hotels[i].id}/${startDateObj.getFullYear()}/${startDateObj.getMonth() + 1}/${startDateObj.getDate() + 1}/${endDateObj.getFullYear()}/${endDateObj.getMonth() + 1}/${endDateObj.getDate() + 1}`);
+        const request = await fetch(`http://localhost:8090/cliente/disponibilidad/${hotels[i].id}/${startDateObj.getFullYear()}/${startDateObj.getMonth() + 1}/${startDateObj.getDate() + 1}/${endDateObj.getFullYear()}/${endDateObj.getMonth() + 1}/${endDateObj.getDate() + 1}?ciudad=${ciudad}`);
         const response = await request.json();
         if (response === 0) {
           setHotels((prevHotels) => prevHotels.filter((hotel) => hotel.id !== hotels[i].id));
@@ -131,6 +136,10 @@ const HomePage = () => {
             <label htmlFor="end-date" className="fecha">Salida</label>
             <input type="date" id="end-date" value={endDate} onChange={handleEndDateChange} />
           </div>
+          <div className="ciudad-input">
+            <label htmlFor="ciudad" className="fecha">Ciudad</label>
+            <input type="text" id="ciudad" value={ciudad} onChange={handleCiudadChange} />
+          </div>
             <button className="botbusquedaFec" onClick={filterHotels}>Buscar</button>
             </div>
       <div className="containerIni">
@@ -149,6 +158,7 @@ const HomePage = () => {
                     )}
                     <div className="hotel-info">
                       <h4>{hotel.nombre}</h4>
+                      <p>{hotel.descripcion}</p>
                       <p>{hotel.email}</p>
                       <button onClick={() => Verificacion(hotel.id)}>Reservar</button>
                     </div>
