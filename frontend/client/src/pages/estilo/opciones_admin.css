@@ -1,0 +1,70 @@
+body.bodyinicioADM {
+ /* background-image: url();*/
+  background-color: #80a4b4;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .cuadradointerno {
+
+background-color: rgba(65, 76, 87, 0.5);
+border-radius: 2%;
+border: 1px solid black;
+height: 25vh;
+width: 30vw;
+
+  }
+
+
+
+
+  .titulo {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+  
+  .botones-container {
+    display: flex;
+    justify-content: center;
+    border-radius: 3%;
+  }
+  
+  .botonAD {
+    background-color: #247fbb;
+    color: white;
+    border: none;
+    border-radius: 3%;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 0 10px;
+    text-decoration: none;
+  }
+  
+  .botonAD:hover {
+    background-color: #133a8f;
+  }
+  
+
+  .homeAdmin {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #247fbb;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .homeAdmin:hover {
+    background-color: #112f49;
+  }

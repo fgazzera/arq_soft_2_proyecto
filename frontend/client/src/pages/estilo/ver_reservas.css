@@ -1,0 +1,102 @@
+.reservations-container1 {
+ 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url(./imagenes/fondoop1.jpg);
+  background-repeat: no-repeat;
+  background-size: cover
+}
+
+.reservations-container2 {
+  background-color: #e6f3ff;
+  padding: 20px;
+  border-radius: 5px;
+}
+  
+  :root {
+    --margendeArriba: 130px auto;
+  }
+  
+  .containerIni {
+    max-width: 50%;
+    margin: 2vh auto;
+    padding: 10px;
+    max-height: 70vh; /* Ajusta este valor según sea necesario */
+    overflow: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+  }
+  
+  .containerIni::-webkit-scrollbar {
+    display: none; /* Ocultar la barra de desplazamiento */
+  }
+  
+  .reserva-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 30px;
+    justify-items: left;
+  }
+  
+  .reserva-card {
+    display: flex;
+    align-items: center;
+    width: 900px;
+    text-align: left;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #fff;
+    margin-bottom: 20px; /* Agrega un margen inferior para separar las reservas */
+  }
+  
+  .hotel-image {
+    max-width: 220px;
+    margin-right: 20px;
+    margin-left: -10%;
+  }
+  
+  .reserva-info {
+    flex-grow: 1; /* Permite que el contenido se expanda y ocupe todo el espacio disponible */
+  }
+  
+  .cliente-info {
+    margin-left: 20px;
+  }
+  
+  .fechas-info {
+    margin-left: 20px;
+  }
+  
+  .reserva-card h4,
+  .reserva-card p {
+    margin: 0;
+  }
+  
+  .reserva-card p {
+    color: gray;
+    margin-top: 5px; /* Ajusta el margen superior según sea necesario */
+  }
+
+  .scroll-container {
+    height: 70%; 
+    overflow-y: auto; 
+    margin-top: 10px; 
+    scrollbar-width: thin; 
+    scrollbar-color: #888 #f1f1f1; 
+  }
+  
+  .scroll-container::-webkit-scrollbar {
+    width: 8px; /* Ancho de la barra de desplazamiento */
+  }
+  
+  .scroll-container::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Color de la pista */
+  }
+  
+  .scroll-container::-webkit-scrollbar-thumb {
+    background-color: #888; /* Color del pulgar */
+    border-radius: 4px; /* Bordes redondeados del pulgar */
+  }
+  

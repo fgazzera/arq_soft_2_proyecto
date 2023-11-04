@@ -1,0 +1,89 @@
+body.bodyCuenta{
+  /*background-image: ;*/
+ background-color: #ccc;
+
+}
+
+
+.containerCU {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .account-form {
+    max-width: 400px;
+    width: 100%;
+    padding: 2rem;
+    border: 1px solid #3d3d3d;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.5);
+
+  }
+  
+  .account-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+  }
+  
+  .logout-button,
+  .reservations-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .logout-button {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .reservations-button {
+    background-color: #15941a;
+    color: white;
+  }
+
+.logout-button:hover,
+.reservations-button:hover {
+  background-color: #2980b9;
+}
+
+.password-toggle {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.password-toggle i {
+  color: #888;
+  transition: color 0.3s;
+}
+
+.password-toggle i:hover {
+  color: #333;
+}
+
+.home-button {
+  display: flex;
+  background-color: white;
+  color: #006ce4;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  transition: all 200ms;
+}
+
+.home-button:hover {
+  scale: 1.03;
+  background-color: rgb(222, 222, 222);
+}
+
+.home-button:active {
+  background-color: white;
+}

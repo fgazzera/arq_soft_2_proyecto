@@ -1,0 +1,95 @@
+.reservations-container1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-image: url(./imagenes/fondoop1.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow-y: auto; /* Agrega el scroll vertical al contenedor */
+}
+  
+.reservations-container2 {
+  background-color: #e6f3ff;
+  padding: 20px;
+  border-radius: 5px;
+  height: 100%;
+  width: 40%;
+}
+
+.reservation-card {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.scroll-container {
+  height: 70%; 
+  overflow-y: auto; 
+  margin-top: 10px; 
+  scrollbar-width: thin; 
+  scrollbar-color: #888 #f1f1f1; 
+}
+
+.scroll-container::-webkit-scrollbar {
+  width: 8px; /* Ancho de la barra de desplazamiento */
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Color de la pista */
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background-color: #888; /* Color del pulgar */
+  border-radius: 4px; /* Bordes redondeados del pulgar */
+}
+
+.filters-container h6{
+  text-align: center;
+  font-weight: bold; 
+}
+
+.contdeFechas {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.date-picker {
+  display: flex;
+  margin: 2.5rem 20px 0px 0px;
+  align-items: center;
+}
+
+.hotel-filter-item {
+  display: inline-block;
+  margin-right: 10px; /* Ajusta el margen derecho según tus necesidades */
+}
+
+.hotel-filter-container {
+  display: flex;
+  justify-content: center; 
+}
+
+.hotel-filter-button {
+  margin-right: 10px; 
+  padding: 8px 16px; 
+  background-color: #29537a;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.hotel-filter-button:hover {
+  background-color: #112f49;
+}
+
+.hotel-filter-button:focus {
+  outline: none; /* Quita el contorno al hacer clic en el botón */
+}
+
+h4 {
+  text-align: center;
+}

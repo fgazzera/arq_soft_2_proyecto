@@ -27,5 +27,5 @@ func main() {
 	}
 
 	fmt.Println("Starting server")
-	ginRouter.Run(":8090")
+	ginRouter.Run(":8070")
 }

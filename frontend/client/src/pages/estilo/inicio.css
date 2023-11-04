@@ -1,0 +1,212 @@
+.header-content {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  background-color: #003c94;
+  height: 10vh;
+  padding: 10px;
+  box-shadow: 0px 3px 20px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+#start-date{
+  font-family: inherit;
+  font-weight: 600;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  height: 3rem;
+  width: 100%;
+  font-size: 16px;
+  padding: 10px;
+  margin: 0px;
+  box-shadow: none;
+}
+
+#end-date{
+  font-family: inherit;
+  font-weight: 600;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  height: 3rem;
+  width: 100%;
+  font-size: 16px;
+  padding: 10px;
+  margin: 0px;
+  box-shadow: none;
+}
+
+.contdeFechas {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.date-pickerINI1 {
+  display: flex;
+  margin: 2.5rem 20px 0px 0px;
+  align-items: center;
+  height: 3.2rem;
+  border-radius: 10px;
+  background-color: rgb(255 255 255 / 75%);
+  box-shadow: 0px 0px 10px 0.1px rgb(108, 108, 108);
+}
+
+.botbusquedaFec {
+  background-color: #0a793a;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin-top: 2.5rem;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 25px;
+  transition: all 200ms;
+}
+
+.botbusquedaFec:hover{
+  scale: 1.03;
+  background-color: rgb(43, 143, 87);
+  box-shadow: 0px 0px 10px;
+}
+
+.bodyinicio {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(./imagenes/fondoop1.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: -1;
+}
+
+:root {
+  --margendeArriba: 130px auto;
+}
+
+.containerIni {
+  max-width: 50%;
+  margin: 2vh auto;
+  padding: 10px;
+  max-height: 70vh; /* Ajusta este valor segun haga falta */
+  overflow: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+
+.containerIni::-webkit-scrollbar {
+  display: none; /* Ocultar la barra de desplazamiento*/
+}
+
+.admin-button-container{
+  display: flex;
+  margin-right: 15px;
+}
+
+.cuenta-button-container{
+  display: flex;
+  margin-right: 15px;
+}
+
+.admin-button {
+  display: flex;
+  background-color: white;
+  color: #006ce4;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  transition: all 200ms;
+}
+
+.cuenta-button {
+  display: flex;
+  background-color: white;
+  color: #006ce4;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  transition: all 200ms;
+}
+
+.admin-button:hover, .cuenta-button:hover {
+  scale: 1.03;
+  background-color: rgb(222, 222, 222);
+}
+
+.admin-button:active, .cuenta-button:active{
+  background-color: white;
+}
+
+
+.hotels-container {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 30px;
+  justify-items: left;
+}
+
+.hotel-card {
+  display: flex;
+  align-items: center;
+  width: 900px;
+  text-align: left;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #fff;
+  margin-bottom: 20px; /* Agrega un margen inferior para separar los hoteles */
+}
+
+.hotel-image {
+  max-width: 220px;
+  margin-right: 20px;
+  margin-left: -10%;
+}
+
+.hotel-info {
+  flex-grow: 1; /* Permite que el contenido se expanda y ocupe todo el espacio disponible */
+}
+
+.hotel-card h4,
+.hotel-card p {
+  margin: 0;
+}
+
+.hotel-card button {
+  background-color: #006ce4bf;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 15px;
+    margin-top: 10px;
+    font-weight: 600;
+    transition: all 200ms;
+}
+
+
+.hotel-card button:hover {
+  background-color: rgba(2, 84, 178, 0.749);
+  scale: 1.03;
+}
+
+.fecha {
+  display: block;
+  margin-bottom: 0px;
+  padding: 10px;
+}

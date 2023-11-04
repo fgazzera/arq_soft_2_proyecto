@@ -1,9 +1,10 @@
 package main
 
 import (
-	"books-api/router"
-	"books-api/utils/db"
+	"busqueda_hotel-api/go_solr"
+	"busqueda_hotel-api/router"
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,14 +15,8 @@ var (
 func main() {
 	ginRouter = gin.Default()
 	router.MapUrls(ginRouter)
-	err := db.InitDB()
-	defer db.DisconnectDB()
-
-	if err != nil {
-		fmt.Println("Cannot init db")
-		fmt.Println(err)
-		return
-	}
+	solrURL := "http://localhost:8983/solr"
+	go_solr.InitSolrClient(solrURL)
 	fmt.Println("Starting server")
 	ginRouter.Run(":8090")
 }

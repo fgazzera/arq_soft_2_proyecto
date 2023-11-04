@@ -1,41 +1,66 @@
-package book
+/*package hotel
 
 import (
-	model "books-api/models"
-	"books-api/utils/db"
 	"context"
+	"ficha_hotel-api/model"
+	"ficha_hotel-api/utils/db"
 	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func GetById(id string) model.Book {
-	var book model.Book
+func GetHotelById(id string) model.Hotel {
+	var hotel model.Hotel
 	db := db.MongoDb
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		fmt.Println(err)
-		return book
+		return hotel
 	}
-	err = db.Collection("books").FindOne(context.TODO(), bson.D{{"_id", objID}}).Decode(&book)
+	err = db.Collection("ficha_hotel").FindOne(context.TODO(), bson.D{{"_id", objID}}).Decode(&hotel)
 	if err != nil {
 		fmt.Println(err)
-		return book
+		return hotel
 	}
-	return book
+	return hotel
 
 }
 
-func Insert(book model.Book) model.Book {
+func InsertHotel(hotel model.Hotel) model.Hotel {
 	db := db.MongoDb
-	insertBook := book
-	insertBook.Id = primitive.NewObjectID()
-	_, err := db.Collection("books").InsertOne(context.TODO(), &insertBook)
+	insertHotel := hotel
+	insertHotel.ID = primitive.NewObjectID()
+	_, err := db.Collection("ficha_hotel").InsertOne(context.TODO(), &insertHotel)
 
 	if err != nil {
 		fmt.Println(err)
-		return book
+		return hotel
 	}
-	book.Id = insertBook.Id
-	return book
+	hotel.ID = insertHotel.ID
+	return hotel
 }
+
+func UpdateHotel(hotel model.Hotel) model.Hotel {
+	db := db.MongoDb
+	filter := bson.M{"_id": hotel.ID}
+	update := bson.M{
+		"$set": bson.M{
+			"nombre":      hotel.Nombre,
+			"descripcion": hotel.Descripcion,
+			"email":       hotel.Email,
+			"ciudad":      hotel.Ciudad,
+			"images":      hotel.Images,
+			"cant_hab":    hotel.CantHab,
+			"amenities":   hotel.Amenities,
+		},
+	}
+
+	_, err := db.Collection("ficha_hotel").UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		fmt.Println(err)
+		return hotel
+	}
+
+	return hotel
+}*/

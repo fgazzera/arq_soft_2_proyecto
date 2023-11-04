@@ -1,0 +1,39 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+
+  .rectangulo1 {
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    padding: 20px;
+  }
+  
+  .titulo {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+  
+  .botones-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+
+  .botonAC {
+    background-color: #4c90af;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 0 10px;
+    text-decoration: none;
+  }
+  
+  .botonAC:hover {
+    background-color: rgb(38, 57, 161);
+  }
+  
