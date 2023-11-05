@@ -3,14 +3,17 @@ package router
 import (
 	hotelController "busqueda_hotel-api/controllers/hotel"
 	"fmt"
+
 	"github.com/gin-gonic/gin"
 )
 
 func MapUrls(router *gin.Engine) {
-	// Products Mapping
-	router.GET("/hotel/:id", hotelController.GetHotelById)
-	router.POST("/hotel", hotelController.InsertHotel)
-	//router.POST("/hotel_update/:id", hotelController.UpdateHotelById)
+	// Hotel Mapping
+	router.GET("/hotel", hotelController.GetHotels)
+	router.GET("/hotel/:id", hotelController.GetHotel)
+	router.GET("/disponibilidad/:fechainicio/:fechafinal/:ciudad", hotelController.GetDisponibilidad)
+	router.GET("/disponibilidad/:fechainicio/:fechafinal/", hotelController.GetDisponibilidad)
+	router.POST("/hotel", hotelController.CreateHotel)
 
 	fmt.Println("Finishing mappings configurations")
 }

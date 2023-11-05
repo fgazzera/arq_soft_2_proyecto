@@ -5,8 +5,7 @@ import (
 	"ficha_hotel-api/dtos"
 	"ficha_hotel-api/model"
 	e "ficha_hotel-api/utils/errors"
-
-	"github.com/streadway/amqp"
+	queue "ficha_hotel-api/utils/queue"
 )
 
 type hotelService struct{}
@@ -21,25 +20,8 @@ var (
 	HotelService hotelServiceInterface
 )
 
-const rabbitMQURL = "amqp://user:password@localhost:5672"
-
 func init() {
 	HotelService = &hotelService{}
-}
-
-func setupRabbitMQ() (*amqp.Connection, *amqp.Channel, error) {
-	conn, err := amqp.Dial(rabbitMQURL)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	ch, err := conn.Channel()
-	if err != nil {
-		conn.Close()
-		return nil, nil, err
-	}
-
-	return conn, ch, nil
 }
 
 func (s *hotelService) GetHotelById(id string) (dtos.HotelDto, e.ApiError) {
@@ -83,31 +65,7 @@ func (s *hotelService) InsertHotel(hotelDto dtos.HotelDto) (dtos.HotelDto, e.Api
 
 	hotelDto.ID = hotel.ID.Hex()
 
-	// Enviar un mensaje a RabbitMQ después de crear el hotel
-	conn, ch, err := setupRabbitMQ()
-	if err != nil {
-		return hotelDto, e.NewInternalServerApiError("Error al configurar RabbitMQ", err)
-	}
-	defer conn.Close()
-	defer ch.Close()
-
-	exchangeName := "hotel_insert" // Nombre del intercambio en RabbitMQ
-	routingKey := "hotel.created"  // Clave de enrutamiento para la creación de hoteles
-
-	message := "Se ha creado un nuevo hotel con ID: " + hotel.ID.Hex() // Mensaje a enviar
-
-	err = ch.ExchangeDeclare(exchangeName, "topic", true, false, false, false, nil)
-	if err != nil {
-		return hotelDto, e.NewInternalServerApiError("Error al declarar el intercambio en RabbitMQ", err)
-	}
-
-	err = ch.Publish(exchangeName, routingKey, false, false, amqp.Publishing{
-		ContentType: "text/plain",
-		Body:        []byte(message),
-	})
-	if err != nil {
-		return hotelDto, e.NewInternalServerApiError("Error al publicar el mensaje en RabbitMQ", err)
-	}
+	queue.Send(hotelDto.ID)
 
 	return hotelDto, nil
 }
@@ -131,31 +89,7 @@ func (s *hotelService) UpdateHotelById(id string, hotelDto dtos.HotelDto) (dtos.
 	hotel = hotelDao.UpdateHotel(hotel)
 	hotelDto.ID = hotel.ID.Hex()
 
-	// Enviar un mensaje a RabbitMQ después de actualizar el hotel
-	conn, ch, err := setupRabbitMQ()
-	if err != nil {
-		return hotelDto, e.NewInternalServerApiError("Error al configurar RabbitMQ", err)
-	}
-	defer conn.Close()
-	defer ch.Close()
-
-	exchangeName := "hotel_update" // Nombre del intercambio en RabbitMQ
-	routingKey := "hotel.updated"  // Clave de enrutamiento para la actualización de hoteles
-
-	message := "Se ha actualizado un hotel con ID: " + hotel.ID.Hex() // Mensaje a enviar
-
-	err = ch.ExchangeDeclare(exchangeName, "topic", true, false, false, false, nil)
-	if err != nil {
-		return hotelDto, e.NewInternalServerApiError("Error al declarar el intercambio en RabbitMQ", err)
-	}
-
-	err = ch.Publish(exchangeName, routingKey, false, false, amqp.Publishing{
-		ContentType: "text/plain",
-		Body:        []byte(message),
-	})
-	if err != nil {
-		return hotelDto, e.NewInternalServerApiError("Error al publicar el mensaje en RabbitMQ", err)
-	}
+	queue.Send(hotelDto.ID)
 
 	return hotelDto, nil
 }

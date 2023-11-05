@@ -18,7 +18,7 @@ required: Marcado como "required" (esto significa que este campo es necesario pa
 Campo "nombre":
 
 nombre: nombre
-tipo: text_general
+tipo: string
 stored: Marcado como "stored".
 indexed: Marcado como "indexed".
 uninvertible: No se necesita.
@@ -28,7 +28,7 @@ required: No se necesita.
 Campo "descripcion":
 
 nombre: descripcion
-tipo: text_general
+tipo: string
 stored: Marcado como "stored".
 indexed: Marcado como "indexed".
 uninvertible: No se necesita.
@@ -48,7 +48,7 @@ required: No se necesita.
 Campo "ciudad":
 
 nombre: ciudad
-tipo: text_general
+tipo: string
 stored: Marcado como "stored".
 indexed: Marcado como "indexed".
 uninvertible: No se necesita.
@@ -65,9 +65,9 @@ uninvertible: No se necesita.
 docValued: No se necesita.
 multiValued: Marcado como "multiValued" (puedes tener múltiples imágenes por hotel).
 required: No se necesita.
-Campo "cant_hab":
+Campo "canthab":
 
-nombre: cant_hab
+nombre: canthab
 tipo: int
 stored: Marcado como "stored".
 indexed: Marcado como "indexed".
@@ -78,7 +78,7 @@ required: No se necesita.
 Campo "amenities":
 
 nombre: amenities
-tipo: text_general
+tipo: string
 stored: Marcado como "stored".
 indexed: Marcado como "indexed".
 uninvertible: No se necesita.

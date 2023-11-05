@@ -1,19 +1,26 @@
 package services
 
 import (
+	hotelDao "busqueda_hotel-api/daos/hotel" // Asegúrate de importar el paquete DAO correcto
 	"busqueda_hotel-api/dtos"
-	"busqueda_hotel-api/go_solr"
+	model "busqueda_hotel-api/models"
 	e "busqueda_hotel-api/utils/errors"
-
-	"github.com/vanng822/go-solr/solr"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"sync"
 )
 
 type hotelService struct{}
 
 type hotelServiceInterface interface {
-	GetHotelById(id string) (dtos.HotelDto, e.ApiError)
-	InsertHotel(hotelDto dtos.HotelDto) (e.ApiError)
-	//UpdateHotelById(id string, hotelDto dtos.HotelDto) (dtos.HotelDto, e.ApiError)
+	GetHotel(id string) (dtos.HotelDto, e.ApiError)
+	CreateHotel(hotelDto dtos.HotelDto) (dtos.HotelDto, e.ApiError)
+	UpdateHotel(hotelDto dtos.HotelDto) (dtos.HotelDto, e.ApiError)
+	GetAllHotels() (dtos.HotelsDto, e.ApiError)
+	GetHotelsByCiudad(ciudad string) (dtos.HotelsDto, e.ApiError)
+	GetDisponibilidad(ciudad string, fechainicio string, fechafinal string) (dtos.HotelsDisponibilidadDto, e.ApiError)
 }
 
 var (
@@ -24,113 +31,215 @@ func init() {
 	HotelService = &hotelService{}
 }
 
-func (s *hotelService) GetHotelById(id string) (dtos.HotelDto, e.ApiError) {
-	solrClient := go_solr.GetSolrClient()
+func (s *hotelService) GetAllHotels() (dtos.HotelsDto, e.ApiError) {
 
-	// Define la consulta para buscar el hotel por ID
-	query := solr.NewQuery()
-	query.Q("id:" + id)
-
-	// Realiza la consulta a Solr
-	//response := solrClient.Search(query)
-	search := solrClient.Search(query)
-	response, _ := search.Result(nil)
-
-	/*if err != nil {
-		// Maneja el error de la consulta a Solr
-		return dtos.HotelDto{}, e.NewInternalServerApiError("error in Solr query", err)
-	}*/
-
-	// Comprueba si se encontraron resultados
-	if response.Results.NumFound == 0 {
-		return dtos.HotelDto{}, e.NewBadRequestApiError("hotel not found")
+	var hotelDtos dtos.HotelsDto
+	hotelDtos.Hotels = []dtos.HotelDto{}
+	hotelClient := hotelDao.NewHotelSolrDAO()
+	hotels, err := hotelClient.GetAll()
+	if err != nil {
+		return hotelDtos, e.NewBadRequestApiError("error al obtener hoteles")
 	}
 
-	// Obtén el primer resultado (suponiendo que solo haya una coincidencia)
-	hotel := response.Results.Docs[0]
+	// Mapear los modelos de hoteles a DTOs
 
-	// Crea un HotelDto a partir de los datos de Solr
-	hotelDto := dtos.HotelDto{
-		ID:          hotel["id"].(string),
-		Nombre:      hotel["nombre"].(string),
-		Descripcion: hotel["descripcion"].(string),
-		Email:       hotel["email"].(string),
-		Ciudad:      hotel["ciudad"].(string),
-		Images:      hotel["images"].([]string),
-		CantHab:     int(hotel["canthab"].(float64)),
-		Amenities:   hotel["amenities"].([]string),
+	for _, hotel := range hotels {
+		hotelDto := dtos.HotelDto{
+			ID:          hotel.ID,
+			Nombre:      hotel.Nombre,
+			Descripcion: hotel.Descripcion,
+			Email:       hotel.Email,
+			Ciudad:      hotel.Ciudad,
+			Images:      hotel.Images,
+			CantHab:     hotel.CantHab,
+			Amenities:   hotel.Amenities,
+		}
+		hotelDtos.Hotels = append(hotelDtos.Hotels, hotelDto)
 	}
+
+	return hotelDtos, nil
+}
+
+func (s *hotelService) GetHotelsByCiudad(ciudad string) (dtos.HotelsDto, e.ApiError) {
+
+	var hotelDtos dtos.HotelsDto
+	hotelDtos.Hotels = []dtos.HotelDto{}
+	hotelClient := hotelDao.NewHotelSolrDAO()
+	hotels, err := hotelClient.GetByCiudad(ciudad)
+	if err != nil {
+		return hotelDtos, e.NewBadRequestApiError("error al obtener hoteles")
+	}
+
+	// Mapear los modelos de hoteles a DTOs
+
+	for _, hotel := range hotels {
+		hotelDto := dtos.HotelDto{
+			ID:          hotel.ID,
+			Nombre:      hotel.Nombre,
+			Descripcion: hotel.Descripcion,
+			Email:       hotel.Email,
+			Ciudad:      hotel.Ciudad,
+			Images:      hotel.Images,
+			CantHab:     hotel.CantHab,
+			Amenities:   hotel.Amenities,
+		}
+		hotelDtos.Hotels = append(hotelDtos.Hotels, hotelDto)
+	}
+
+	return hotelDtos, nil
+}
+
+type DisponibilidadResult struct {
+	HotelID        string
+	Disponibilidad bool
+}
+
+func (s *hotelService) GetDisponibilidad(ciudad string, fechainicio string, fechafinal string) (dtos.HotelsDisponibilidadDto, e.ApiError) {
+	var hotelDtos dtos.HotelsDisponibilidadDto
+	hotelDtos.Hotels = []dtos.HotelDisponibilidadDto{}
+	hotelClient := hotelDao.NewHotelSolrDAO()
+	var hotels []*model.Hotel
+	var err error
+	if ciudad == "" {
+		hotels, err = hotelClient.GetAll()
+	} else {
+		hotels, err = hotelClient.GetByCiudad(ciudad)
+	}
+
+	if err != nil {
+		return hotelDtos, e.NewBadRequestApiError("error al obtener hoteles")
+	}
+
+	// Crear un canal para recibir resultados de disponibilidad
+	disponibilidadCh := make(chan DisponibilidadResult, len(hotels))
+
+	// Crear una WaitGroup para esperar que todas las goroutines terminen
+	var wg sync.WaitGroup
+
+	// Mapear los modelos de hoteles a DTOs y consultar la disponibilidad concurrentemente
+	for _, hotel := range hotels {
+
+		hotelDto := dtos.HotelDisponibilidadDto{
+			ID:          hotel.ID,
+			Nombre:      hotel.Nombre,
+			Descripcion: hotel.Descripcion,
+			Email:       hotel.Email,
+			Ciudad:      hotel.Ciudad,
+			Images:      hotel.Images,
+			CantHab:     hotel.CantHab,
+			Amenities:   hotel.Amenities,
+		}
+
+		// Incrementar el contador de WaitGroup para cada goroutine
+		wg.Add(1)
+
+		go func(hotel *model.Hotel, hotelDto dtos.HotelDisponibilidadDto) {
+			defer wg.Done() // Decrementar el contador cuando la goroutine termine
+
+			// Realizar la solicitud de disponibilidad al servicio
+			disponibilidad, err := checkDisponibilidad(hotel.ID, fechainicio, fechafinal)
+			if err != nil {
+				println("Error al hacer el get a user-res-api: ", err.Error())
+				disponibilidadCh <- DisponibilidadResult{HotelID: hotel.ID, Disponibilidad: false}
+				return
+			}
+
+			// Enviar el resultado al canal
+			disponibilidadCh <- DisponibilidadResult{HotelID: hotel.ID, Disponibilidad: disponibilidad}
+		}(hotel, hotelDto)
+
+		// Agregar el hotelDto a la lista de DTOs
+		hotelDtos.Hotels = append(hotelDtos.Hotels, hotelDto)
+	}
+
+	// Esperar a que todas las goroutines terminen
+	wg.Wait()
+
+	// Cerrar el canal después de que todas las goroutines hayan enviado sus resultados
+	close(disponibilidadCh)
+
+	// Crear un mapa para almacenar los resultados de disponibilidad
+	disponibilidadMap := make(map[string]bool)
+
+	// Recopilar resultados de disponibilidad y agregarlos a los DTOs de hoteles
+	for result := range disponibilidadCh {
+		disponibilidadMap[result.HotelID] = result.Disponibilidad
+	}
+
+	// Asignar los valores de disponibilidad desde el mapa a los DTOs de hoteles
+	for i, hotel := range hotelDtos.Hotels {
+		disponibilidad := disponibilidadMap[hotel.ID]
+		println("Hotel: ", hotel.ID, " Disponibilidad: ", disponibilidad)
+		hotelDtos.Hotels[i].Disponibilidad = disponibilidad
+	}
+
+	return hotelDtos, nil
+}
+
+func checkDisponibilidad(hotelID string, fechainicio string, fechafinal string) (bool, error) {
+	// Construye la URL de la solicitud de disponibilidad
+	url := fmt.Sprintf("http://user-res-api:8002/hotel/%s/disponibilidad?fecha-inicio=%s&fecha-final=%s", hotelID, fechainicio, fechafinal)
+
+	// Realiza la solicitud HTTP GET al servicio de disponibilidad
+	resp, err := http.Get(url)
+	if err != nil {
+		return false, err
+	}
+	defer resp.Body.Close()
+
+	// Verifica si la respuesta fue exitosa (código 200)
+	if resp.StatusCode != http.StatusOK {
+		return false, fmt.Errorf("La solicitud de disponibilidad no fue exitosa. Código de respuesta: %d", resp.StatusCode)
+	}
+
+	// Lee el cuerpo de la respuesta HTTP
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return false, err
+	}
+
+	// Decodifica la respuesta JSON
+	var disponibilidadResponse struct {
+		Disponibilidad bool `json:"disponibilidad"`
+	}
+	if err := json.Unmarshal(body, &disponibilidadResponse); err != nil {
+		return false, err
+	}
+
+	// Retorna la disponibilidad obtenida de la respuesta
+	return disponibilidadResponse.Disponibilidad, nil
+}
+
+func (s *hotelService) GetHotel(id string) (dtos.HotelDto, e.ApiError) {
+
+	var hotelDto dtos.HotelDto
+	hotelClient := hotelDao.NewHotelSolrDAO()
+	hotel, err := hotelClient.Get(id)
+	if err != nil {
+		return hotelDto, e.NewBadRequestApiError(err.Error())
+	}
+
+	if hotel.ID == "000000000000000000000000" {
+		return hotelDto, e.NewBadRequestApiError("hotel not found")
+	}
+
+	hotelDto.ID = hotel.ID
+	hotelDto.Nombre = hotel.Nombre
+	hotelDto.Descripcion = hotel.Descripcion
+	hotelDto.Email = hotel.Email
+	hotelDto.Ciudad = hotel.Ciudad
+	hotelDto.Images = hotel.Images
+	hotelDto.CantHab = hotel.CantHab
+	hotelDto.Amenities = hotel.Amenities
 
 	return hotelDto, nil
 }
 
-func (s *hotelService) InsertHotel(hotelDto dtos.HotelDto) (e.ApiError) {
+func (s *hotelService) CreateHotel(hotelDto dtos.HotelDto) (dtos.HotelDto, e.ApiError) {
+	var hotel model.Hotel
 
-	solrClient := go_solr.GetSolrClient()
-
-	// Establece los campos del documento con los datos del hotel
-	hotelDocument := make(solr.Document)
-	hotelDocument["id"] = hotelDto.ID
-	hotelDocument["nombre"] = hotelDto.Nombre
-	hotelDocument["descripcion"] = hotelDto.Descripcion
-	hotelDocument["email"] = hotelDto.Email
-	hotelDocument["ciudad"] = hotelDto.Ciudad
-	hotelDocument["images"] = hotelDto.Images
-	hotelDocument["canthab"] = hotelDto.CantHab
-	hotelDocument["amenities"] = hotelDto.Amenities
-
-	documents := []solr.Document{hotelDocument}
-	_, err := solrClient.Add(documents, 100, nil)
-
-	if err != nil {
-		return e.NewInternalServerApiError("Error inserting hotel into Solr", err)
-	}
-
-	// Envía los cambios a Solr
-	_, err = solrClient.Commit()
-
-	if err != nil {
-		return e.NewInternalServerApiError("Error committing changes to Solr", err)
-	}
-
-	return nil
-}
-
-/*func InsertHotelIntoSolr(hotel dtos.HotelDto) error {
-    solrClient := go_solr.GetSolrClient()
-
-    // Crear un nuevo documento para el hotel a ser insertado
-    doc := solr.NewAddDocument()
-    doc.Set("id", hotel.ID)
-    doc.Set("nombre", hotel.Nombre)
-    doc.Set("descripcion", hotel.Descripcion)
-    doc.Set("email", hotel.Email)
-    doc.Set("ciudad", hotel.Ciudad)
-    doc.Set("images", hotel.Images)
-    doc.Set("canthab", hotel.CantHab)
-    doc.Set("amenities", hotel.Amenities)
-
-    // Enviar el documento al cliente Solr para ser insertado
-    _, err := solrClient.Update(doc)
-
-    if err != nil {
-        return err
-    }
-
-    // Si la inserción fue exitosa, realiza un commit para que los cambios se apliquen inmediatamente
-    _, err = solrClient.Commit()
-
-    return err
-}*/
-
-/*func (s *hotelService) UpdateHotelById(id string, hotelDto dtos.HotelDto) (dtos.HotelDto, e.ApiError) {
-
-	var hotel model.Hotel = hotelDao.GetHotelById(id)
-
-	if hotel.ID.Hex() == "000000000000000000000000" {
-		return hotelDto, e.NewBadRequestApiError("hotel not found")
-	}
-
+	// Aquí deberías mapear los campos del DTO al modelo Hotel
+	hotel.ID = hotelDto.ID
 	hotel.Nombre = hotelDto.Nombre
 	hotel.Descripcion = hotelDto.Descripcion
 	hotel.Email = hotelDto.Email
@@ -139,8 +248,38 @@ func (s *hotelService) InsertHotel(hotelDto dtos.HotelDto) (e.ApiError) {
 	hotel.CantHab = hotelDto.CantHab
 	hotel.Amenities = hotelDto.Amenities
 
-	hotel = hotelDao.UpdateHotel(hotel)
-	hotelDto.ID = hotel.ID.Hex()
+	hotelClient := hotelDao.NewHotelSolrDAO()
+	err := hotelClient.Create(&hotel)
+
+	if err != nil {
+		return hotelDto, e.NewBadRequestApiError(err.Error())
+	}
+	hotelDto.ID = hotel.ID
 
 	return hotelDto, nil
-}*/
+}
+
+func (s *hotelService) UpdateHotel(hotelDto dtos.HotelDto) (dtos.HotelDto, e.ApiError) {
+	var hotel model.Hotel
+
+	// Aquí deberías mapear los campos del DTO al modelo Hotel
+	hotel.ID = hotelDto.ID
+	hotel.Nombre = hotelDto.Nombre
+	hotel.Descripcion = hotelDto.Descripcion
+	hotel.Email = hotelDto.Email
+	hotel.Ciudad = hotelDto.Ciudad
+	hotel.Images = hotelDto.Images
+	hotel.CantHab = hotelDto.CantHab
+	hotel.Amenities = hotelDto.Amenities
+
+	hotelClient := hotelDao.NewHotelSolrDAO()
+	err := hotelClient.Update(&hotel)
+
+	if err != nil {
+		return hotelDto, e.NewBadRequestApiError("error in update")
+	}
+	hotelDto.ID = hotel.ID
+	hotelDto.ID = hotel.ID
+
+	return hotelDto, nil
+}
