@@ -36,7 +36,7 @@ func (dao *HotelSolrDao) Create(hotel *model.Hotel) error {
 				"email":       hotel.Email,
 				"ciudad":      hotel.Ciudad,
 				"images":      hotel.Images,
-				"cant_hab":    hotel.CantHab,
+				"cant_hab":    float64(hotel.CantHab),
 				"amenities":   hotel.Amenities,
 			},
 		},
@@ -61,14 +61,14 @@ func (dao *HotelSolrDao) Update(hotel *model.Hotel) error {
 				"email":       hotel.Email,
 				"ciudad":      hotel.Ciudad,
 				"images":      hotel.Images,
-				"cant_hab":    hotel.CantHab,
+				"cant_hab":    float64(hotel.CantHab),
 				"amenities":   hotel.Amenities,
 			},
 		},
 	}
 
 	// Actualiza el documento del hotel en Solr utilizando la nueva API
-	updateURL := "http://solr:8983/solr/hotels/update?commit=true" // Reemplaza "your-core" con el nombre de tu core en Solr
+	updateURL := "http://localhost:8983/solr/busqueda_hotel-core/update?commit=true" // Reemplaza "your-core" con el nombre de tu core en Solr
 
 	requestBody, err := json.Marshal(hotelDocument)
 	if err != nil {
@@ -113,6 +113,9 @@ func (dao *HotelSolrDao) Get(id string) (*model.Hotel, error) {
 	// Extrae el primer resultado (debería haber solo uno)
 	doc := resp.Results.Collection[0]
 
+	println(doc.Field("images"))
+	println(doc.Field("amenities"))
+
 	// Construye un modelo de hotel a partir de los campos del documento
 	hotel := &model.Hotel{
 		ID:          doc.Fields["id"].(string),
@@ -120,9 +123,9 @@ func (dao *HotelSolrDao) Get(id string) (*model.Hotel, error) {
 		Descripcion: doc.Field("descripcion").([]interface{})[0].(string),
 		Email:       doc.Field("email").([]interface{})[0].(string),
 		Ciudad:      doc.Field("ciudad").([]interface{})[0].(string),
-		Images:      getStringSliceFromInterface(doc.Field("images")),
+		Images:      getStringSliceFromInterface(doc.Field("images")),//getStringSliceFromInterface(doc.Field("images")),
 		CantHab:     int(doc.Field("cant_hab").([]interface{})[0].(float64)),
-		Amenities:   getStringSliceFromInterface(doc.Field("amenities")),
+		Amenities:   getStringSliceFromInterface(doc.Field("amenities")),//getStringSliceFromInterface(doc.Field("amenities")), 
 	}
 
 	return hotel, nil

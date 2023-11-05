@@ -33,8 +33,8 @@ func Init() {
 	defer ch.Close()
 
 	q, err = ch.QueueDeclare(
-		"ficha_hotel-api", // name
-		true,              // durable
+		"hoteles", // name
+		false,              // durable
 		false,             // delete when unused
 		false,             // exclusive
 		false,             // no-wait
@@ -54,8 +54,8 @@ func Send(message string) {
 	defer ch.Close()
 
 	q, err = ch.QueueDeclare(
-		"ficha_hotel-api", // name
-		true,              // durable
+		"hoteles", // name
+		false,              // durable
 		false,             // delete when unused
 		false,             // exclusive
 		false,             // no-wait

@@ -15,7 +15,7 @@ import (
 
 func GetOrInsertByID(id string) {
 	//Hago una request a hotel-api pidiendo todos los datos del hotel
-	url := fmt.Sprintf("http://hotel-api:8000/hotel/%s", id)
+	url := fmt.Sprintf("http://localhost:8070/hotel/%s", id)
 
 	// Realiza la solicitud HTTP GET
 	resp, err := http.Get(url)
